@@ -22,8 +22,8 @@ export default function RootLayout({ children }) {
 
   const [isMemberModalOpen, setIsMemberModalOpen] = useState(false);
   const [isAiCopilotOpen, setIsAiCopilotOpen] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  // Initial Data Fetch
   useEffect(() => {
     fetchInitialData();
   }, []);
@@ -141,30 +141,34 @@ export default function RootLayout({ children }) {
     <html lang="en" className="dark">
       <head>
         <title>NOVA — Team Productivity Platform</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content="Plan. Collaborate. Deliver. Next-generation project and task management for modern engineering teams." />
       </head>
-      <body className="bg-[#090d16] text-slate-100 antialiased min-h-screen">
-        <div className="flex">
-          {/* Sidebar */}
-          <Sidebar />
+      <body className="bg-[#030712] text-slate-100 antialiased min-h-screen">
+        <div className="flex flex-col min-h-screen">
+          {/* Responsive Sidebar */}
+          <Sidebar
+            mobileOpen={mobileSidebarOpen}
+            onMobileClose={() => setMobileSidebarOpen(false)}
+          />
 
-          {/* Main Workspace Area */}
-          <div className="flex-1 flex flex-col min-w-0">
-            <Header
-              onOpenTaskModal={() => { setSelectedTask(null); setIsTaskModalOpen(true); }}
-              onOpenProjectModal={() => { setSelectedProject(null); setIsProjectModalOpen(true); }}
-              onOpenMemberModal={() => setIsMemberModalOpen(true)}
-              onToggleAiCopilot={() => setIsAiCopilotOpen(!isAiCopilotOpen)}
-              onResetData={handleResetData}
-            />
+          {/* Header */}
+          <Header
+            onOpenTaskModal={() => { setSelectedTask(null); setIsTaskModalOpen(true); }}
+            onOpenProjectModal={() => { setSelectedProject(null); setIsProjectModalOpen(true); }}
+            onOpenMemberModal={() => setIsMemberModalOpen(true)}
+            onToggleAiCopilot={() => setIsAiCopilotOpen(!isAiCopilotOpen)}
+            onResetData={handleResetData}
+            onOpenMobileSidebar={() => setMobileSidebarOpen(true)}
+          />
 
-            <main className="ml-64 p-6 min-h-[calc(100vh-64px)]">
-              {children}
-            </main>
-          </div>
+          {/* Main Content Area */}
+          <main className="lg:ml-64 p-4 sm:p-6 flex-1 min-h-[calc(100vh-64px)] w-full max-w-full">
+            {children}
+          </main>
         </div>
 
-        {/* Shared Modals & AI Copilot Drawer */}
+        {/* Shared Modals */}
         <TaskModal
           isOpen={isTaskModalOpen}
           task={selectedTask}
